@@ -1,8 +1,12 @@
-from django.urls import path, include, reverse_lazy
+'''
+This module contains auth_base views
+'''
+
+from django.urls import path, reverse_lazy
 from django.contrib.auth import views as auth_views
-from . import views
-from django_registration.backends.activation import views as registration_views
 from django.views.generic.base import TemplateView
+from django_registration.backends.activation import views as registration_views
+from . import views
 
 app_name = 'auth_base'
 

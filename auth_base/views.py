@@ -1,12 +1,16 @@
-from django.shortcuts import render
-from django_registration.backends.activation.views import (
-    RegistrationView, ActivationView)
-from django.contrib.auth.models import Group
-from .forms import RegisterForm
-from django.urls import reverse_lazy
+'''
+This module contains auth_base views
+'''
 
-# Create your views here.
+from django_registration.backends.activation.views import RegistrationView
+from django.contrib.auth.models import Group
+from django.urls import reverse_lazy
+from .forms import RegisterForm
+
 class RegisterView(RegistrationView):
+    '''
+    Registration view class
+    '''
     form_class = RegisterForm
     success_url = reverse_lazy('auth_base:registration_complete')
     disallowed_url = reverse_lazy('auth_base:registration_disallowed')
