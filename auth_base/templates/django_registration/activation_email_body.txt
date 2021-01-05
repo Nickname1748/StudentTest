@@ -1,0 +1,13 @@
+{% autoescape off %}
+Здравствуйте, 
+
+Ваш аккаунт успешно создан. Подтвердите ваш email по ссылке ниже.
+
+{{ scheme }}://{{ site }}{% url 'auth_base:activate' activation_key=activation_key %}
+
+Если вы не совершали регистрацию, проигнорируйте это письмо.
+
+С уважением,
+Student Test
+
+{% endautoescape %}

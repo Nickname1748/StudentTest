@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Email подтверждён
+{% endblock %}
+{% block content %}
+    <h1>Ваш email подтверждён</h1>
+    <p>Дождитесь подтверждения вашего аккаунта администратором и пользуйтесь</p>
+    <a href="{% url 'auth_base:login' %}" class="btn-action">Войти</a>
+{% endblock %}

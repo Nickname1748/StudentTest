@@ -1,0 +1,18 @@
+.login-button
+{
+    background: #2C1DFF;
+    color:white;
+    border: none;
+    border-radius: 2em;
+    width: 10em;
+    height: 2em;
+}
+.register-button
+{
+    background: #03B81C;
+    color: white;
+    border: none;
+    border-radius: 2em;
+    width: 12em;
+    height: 2.2em;
+}
