@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ group.name }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<h1 class="mt-3">
+		{{group.name}}
+	</h1>
+	<p>Преподаватель группы — <a href="{% url 'admin:user_detail' group.teacher.id %}">{{group.teacher.first_name}} {{group.teacher.last_name}}</a></p>
+	<table class="table">
+		<thead class="thead-light">
+			<tr>
+				<th>
+					Ученики группы
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for user in group.students.all %}
+				<tr>
+					<td><a href="{% url 'admin:user_detail' user.id%}">{{user.first_name}} {{user.last_name}}</a></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}
