@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block content %}
-<h1>Группы</h1>
+{% include "admin/base_admin.html" %}
+<h1 class="mt-2">Группы</h1>
+<a href="{% url 'admin:create_group_form' %}" class="btn btn-success mt-2 mb-2">Добавить группу</a>
 <form method = 'GET'>
 	<label for="search">Поиск по названию</label>
 	<input type="text" class = "form-control" id = "search" placeholder="Введите запрос…" name = 'q'> 

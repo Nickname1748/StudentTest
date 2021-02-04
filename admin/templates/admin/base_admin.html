@@ -1,0 +1,15 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	<div class="container-fluid">
+		<a class = "navbar-brand" href="{% url 'admin:admin' %}">StudentTest</a>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				<li class="nav-item">
+					<a href="{% url 'admin:user_list' %}" class="nav-link">Пользователи</a>
+				</li>
+				<li class="nav-item">
+					<a href="{% url 'admin:group_list' %}" class="nav-link">Группы</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>

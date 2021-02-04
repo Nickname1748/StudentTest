@@ -5,8 +5,9 @@
 {% endblock %}
 
 {% block content %}
+{% include "admin/base_admin.html" %}
 {% load widget_tweaks %}
-<form method="POST">
+<form method="POST" class = "mt-2">
 	{% csrf_token %}
 	{% for field in form.visible_fields %}
 	<div class="form-group">

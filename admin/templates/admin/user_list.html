@@ -5,7 +5,8 @@
 {% endblock %}
 
 {% block content %}
-	<h1>Все пользователи</h1>
+{% include "admin/base_admin.html" %}
+	<h1 class = "mt-2">Все пользователи</h1>
 	<div class="input-group">
 	<form id = 'filter' method = 'get'>
 		<select name = 'role' class="custom-select" form='filter'>
@@ -35,7 +36,7 @@
     		<option value="Unknown">Неподтверждённые</option>
     		{% endif %}
   		</select>
-    	<button type="submit" class="btn btn-primary mt-2">Выбрать</button>
+    	<button type="submit" class="btn btn-primary mt-2 mb-2">Выбрать</button>
 	</form>
 	</div>
 {% if user_list %}
