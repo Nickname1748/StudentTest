@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
-User = get_user_model()
+from study_base.models import StudentGroup
+
 
 class SelectWidget(forms.Select):
     def create_option(self, *args,**kwargs):
@@ -9,6 +10,7 @@ class SelectWidget(forms.Select):
         if not option.get('value'):
             option['attrs']['disabled'] = True
         return option
+
 
 class UpdateRoleForm(forms.Form):
     role = forms.ChoiceField(
@@ -23,7 +25,19 @@ class UpdateRoleForm(forms.Form):
         label = "Изменить роль"
     )
 
-class CreateGroupForm(forms.Form):
+
+class GroupCreateForm(forms.ModelForm):
+    """
+    Create group form.
+    """
+    class Meta:
+        model = StudentGroup
+        fields = ['name', 'teacher', 'students']
+
     name = forms.CharField(max_length = 50, label=("Название"))
-    teacher = forms.ModelChoiceField(queryset=User.objects.filter(groups__name = 'Teacher'), label=("Преподаватель"))
-    students = forms.ModelMultipleChoiceField(queryset = User.objects.filter(groups__name = 'Student'), label=("Ученики"))
+    teacher = forms.ModelChoiceField(
+        queryset=get_user_model().objects.filter(groups__name = 'Teacher'),
+        label=("Преподаватель"))
+    students = forms.ModelMultipleChoiceField(
+        queryset = get_user_model().objects.filter(groups__name = 'Student'),
+        label=("Ученики"))

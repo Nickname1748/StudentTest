@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 
 {% block title %}
-{{ group.name }}
+{{ student_group.name }}
 {% endblock %}
 
 {% block content %}
 {% include "admin/base_admin.html" %}
 <div class="container">
 	<h1 class="mt-3">
-		{{group.name}}
+		{{student_group.name}}
 	</h1>
-	<p>Преподаватель группы — <a href="{% url 'admin:user_detail' group.teacher.id %}">{{group.teacher.first_name}} {{group.teacher.last_name}}</a></p>
+	<p>Преподаватель группы — <a href="{% url 'admin:user_detail' student_group.teacher.id %}">{{student_group.teacher.first_name}} {{student_group.teacher.last_name}}</a></p>
 	<table class="table">
 		<thead class="thead-light">
 			<tr>
@@ -20,7 +20,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for user in group.students.all %}
+			{% for user in student_group.students.all %}
 				<tr>
 					<td><a href="{% url 'admin:user_detail' user.id%}">{{user.first_name}} {{user.last_name}}</a></td>
 				</tr>
