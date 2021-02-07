@@ -80,7 +80,7 @@ def group_details(request, group_id):
     return render(request, "admin/group_detail.html", context = context)
 
 @method_decorator(admin_required, name = 'dispatch')
-class user_list_view(generic.ListView):
+class UserListView(generic.ListView):
     model = User
     template_name = "admin/user_list.html"
     paginate_by = 10
@@ -115,7 +115,7 @@ class GroupListView(generic.ListView):
         return new_context
 
 @admin_required
-def CreateGroupFormView(request):
+def create_group_view(request):
     if request.method == 'GET':
         form = CreateGroupForm()
     elif request.method == 'POST':
