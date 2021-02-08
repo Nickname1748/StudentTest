@@ -1,6 +1,6 @@
-'''
+"""
 This module contains auth_base views
-'''
+"""
 
 from django_registration.backends.activation.views import RegistrationView
 from django.contrib.auth.models import Group
@@ -8,9 +8,9 @@ from django.urls import reverse_lazy
 from .forms import RegisterForm
 
 class RegisterView(RegistrationView):
-    '''
+    """
     Registration view class
-    '''
+    """
     form_class = RegisterForm
     success_url = reverse_lazy('auth_base:registration_complete')
     disallowed_url = reverse_lazy('auth_base:registration_disallowed')
