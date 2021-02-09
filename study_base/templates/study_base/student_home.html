@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+Панель студента
+{% endblock %}
+
+{% block content %}
+    <h1 class="mt-3">Панель студента</h1>
+    {% if studentgroup_list %}
+        <h2 class="mt-2">Группы</h2>
+        {% for studentgroup in studentgroup_list %}
+            <h3>{{ studentgroup.name }}</h3>
+        {% endfor %}
+    {% endif %}
+    {% if plannedtest_list %}
+        <h2 class="mt-2">Запланированные тестирования</h2>
+        {% for plannedtest in plannedtest_list %}
+            <h3>{{ plannedtest }}</h3>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

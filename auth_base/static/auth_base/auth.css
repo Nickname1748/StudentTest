@@ -1,3 +1,6 @@
+body {
+    position: relative;
+}
 .login-button
 {
     background: #2C1DFF;

@@ -28,6 +28,9 @@ class StudentGroup(models.Model):
     )
     students = models.ManyToManyField(get_user_model(), related_name='group_students')
 
+    def __str__(self):
+        return self.name
+
 
 class TestModule(models.Model):
     """
@@ -40,6 +43,9 @@ class TestModule(models.Model):
         verbose_name=gettext_lazy('ID')
     )
     name = models.CharField(max_length=255, verbose_name=gettext_lazy('Name'))
+
+    def __str__(self):
+        return self.name
 
 
 class TestTask(models.Model):
