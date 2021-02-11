@@ -34,13 +34,13 @@ class CreateTestTaskSingleChoiceItemForm(forms.ModelForm):
         fields = ['text', 'is_right']
 
 
-class TestTaskSingleChoiceItemFormSet(forms.formsets.BaseFormSet):
-    """
-    Test task single choice item formset.
-    """
+CreateTestTaskSingleChoiceItemFormSet = forms.formset_factory(CreateTestTaskSingleChoiceItemForm)
 
 
 class CreateTestTaskSingleChoiceForm(forms.ModelForm):
     """
     Form for creating test single choice task.
     """
+    class Meta:
+        model = TestTaskSingleChoice
+        fields = ['task_description', 'module']

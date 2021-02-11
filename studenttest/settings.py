@@ -138,6 +138,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+
 # django-registration settings
 ACCOUNT_ACTIVATION_DAYS = 2
 
