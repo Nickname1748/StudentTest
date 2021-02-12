@@ -12,14 +12,13 @@
             <h3>{{ studentgroup.name }}</h3>
         {% endfor %}
     {% endif %}
-    {% if plannedtest_list %}
-        <h2 class="mt-2">Запланированные тестирования</h2>
-        {% for plannedtest in plannedtest_list %}
-            <h3>{{ plannedtest }}</h3>
-        {% endfor %}
-    {% endif %}
+    <h2 class="mt-2">Запланированные тестирования</h2>
+    {% for plannedtest in plannedtest_list %}
+        <h3>{{ plannedtest }}</h3>
+        <p><a class="btn btn-primary" href="{% url 'study_base:edit_test' plannedtest.id %}">Редактировать тестирование</a></p>
+    {% endfor %}
     <a class="btn btn-primary" href="{% url 'study_base:plan_test' %}">Запланировать тестирование</a>
-    <a class="btn btn-primary" href="{% url 'study_base:create_module' %}">Создать модуль</a>
     <h2>Добавить задания</h2>
+    <a class="btn btn-primary" href="{% url 'study_base:create_module' %}">Создать модуль</a>
     <a class="btn btn-primary" href="{% url 'study_base:create_tasksinglechoice' %}">Создать задание с выбором варианта ответа</a>
 {% endblock %}

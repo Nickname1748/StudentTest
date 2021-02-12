@@ -16,6 +16,9 @@
         <h2 class="mt-2">Запланированные тестирования</h2>
         {% for plannedtest in plannedtest_list %}
             <h3>{{ plannedtest }}</h3>
+            {% if plannedtest.is_active %}
+            <a href="{% url 'study_base:take_test' plannedtest.id %}" class="btn btn-primary">Пройти</a>
+            {% endif %}
         {% endfor %}
     {% endif %}
 {% endblock %}

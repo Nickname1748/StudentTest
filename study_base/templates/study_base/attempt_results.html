@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}
+Результаты тестирования
+{% endblock %}
+
+{% block content %}
+    <h1 class="mt-3">Результаты тестирования</h1>
+    <p>ID: {{ testattempt.id }}</p>
+    <p>Ученик: {{ testattempt.student }}</p>
+    <p>Начало: {{ testattempt.start_date }}</p>
+    <p>Конец: {{ testattempt.finish_date }}</p>
+    <p>Результат: {{ testattempt.result_percent }}</p>
+    <a class="btn btn-primary" href="{% url 'study_base:student_home' %}">Домой</a>
+{% endblock %}

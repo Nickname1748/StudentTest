@@ -44,3 +44,16 @@ class CreateTestTaskSingleChoiceForm(forms.ModelForm):
     class Meta:
         model = TestTaskSingleChoice
         fields = ['task_description', 'module']
+
+
+class TakeTestTaskSingleChoiceForm(forms.Form):
+    """
+    Form for taking test single choice task.
+    """
+    answer = forms.ChoiceField(widget=forms.RadioSelect())
+
+    def __init__(self, *args, **kwargs):
+        choices = kwargs.pop('choices', ())
+        super().__init__(*args, **kwargs)
+        #self.answer = forms.ChoiceField(choices=choices)
+        self.fields['answer'].choices = choices

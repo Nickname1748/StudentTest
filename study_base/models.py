@@ -2,11 +2,13 @@
 This module contains essential study and test modules
 """
 
+from typing import get_args
 import uuid
 
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy
+from django.utils import timezone
 
 
 class StudentGroup(models.Model):
@@ -140,6 +142,13 @@ class PlannedTest(models.Model):
     begin_date = models.DateTimeField(verbose_name=gettext_lazy('Begin date'))
     end_date = models.DateTimeField(verbose_name=gettext_lazy('End date'))
 
+    def is_active(self):
+        """
+        Returns if test is active now.
+        """
+        now = timezone.now()
+        return (now >= self.begin_date) and (now < self.end_date)
+
 
 class PlannedTestModular(PlannedTest):
     """
@@ -164,27 +173,47 @@ class TestAttempt(models.Model):
     """
     Test attempt abstract model.
     """
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=gettext_lazy('ID')
+    )
+    student = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, verbose_name=gettext_lazy('Student'))
     start_date = models.DateTimeField(auto_now_add=True, verbose_name=gettext_lazy('Start date'))
     finish_date = models.DateTimeField(null=True, verbose_name=gettext_lazy('Finish date'))
-
-
-class TestAttemptModular(TestAttempt):
-    """
-    Modular test attempt model.
-    """
     test = models.ForeignKey(
-        PlannedTestModular,
+        PlannedTest,
         on_delete=models.PROTECT,
         verbose_name=gettext_lazy('Test')
     )
-
-
-class TestAttemptManual(TestAttempt):
-    """
-    Manually selected test attempt model.
-    """
-    test = models.ForeignKey(
-        PlannedTestManual,
-        on_delete=models.PROTECT,
-        verbose_name=gettext_lazy('Test')
+    tasks = models.ManyToManyField(
+        TestTask,
+        through='TestAttemptTask',
+        through_fields=('attempt', 'task'),
+        verbose_name=gettext_lazy('Tasks')
     )
+    result = models.FloatField(null=True, verbose_name=gettext_lazy('Result'))
+
+    def is_finished(self):
+        """
+        Returns if test attempt is finished.
+        """
+        if self.finish_date:
+            return True
+        return False
+    
+    def result_percent(self):
+        """
+        Returns the result in percent.
+        """
+        return str(self.result*100) + '%'
+
+
+class TestAttemptTask(models.Model):
+    """
+    Model for linking TestAttempt with TestTask with answer storage.
+    """
+    attempt = models.ForeignKey(TestAttempt, on_delete=models.CASCADE, verbose_name=('Test attempt'))
+    task = models.ForeignKey(TestTask, on_delete=models.CASCADE, verbose_name=gettext_lazy('Task'))
+    answer = models.CharField(max_length=255, verbose_name=gettext_lazy('Answer'), null=True)
