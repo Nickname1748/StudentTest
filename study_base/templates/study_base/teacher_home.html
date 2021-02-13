@@ -15,7 +15,10 @@
     <h2 class="mt-2">Запланированные тестирования</h2>
     {% for plannedtest in plannedtest_list %}
         <h3>{{ plannedtest }}</h3>
-        <p><a class="btn btn-primary" href="{% url 'study_base:edit_test' plannedtest.id %}">Редактировать тестирование</a></p>
+        <p>
+            <a class="btn btn-primary" href="{% url 'study_base:edit_test' plannedtest.id %}">Редактировать тестирование</a>
+            <a class="btn btn-primary" href="{% url 'study_base:planned_test_results' plannedtest.id %}">Результаты</a>
+        </p>
     {% endfor %}
     <a class="btn btn-primary" href="{% url 'study_base:plan_test_modular' %}">Запланировать тестирование по модулю</a>
     <a class="btn btn-primary" href="{% url 'study_base:plan_test_manual' %}">Запланировать тестирование по выбранным заданиям</a>

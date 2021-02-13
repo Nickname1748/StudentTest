@@ -13,7 +13,7 @@ class PlanTestModularForm(forms.ModelForm):
     """
     class Meta:
         model = PlannedTestModular
-        fields = ['student_group', 'begin_date', 'end_date', 'module', 'task_count']
+        fields = ['name', 'student_group', 'begin_date', 'end_date', 'module', 'task_count']
 
 
 class PlanTestManualForm(forms.ModelForm):
@@ -22,7 +22,7 @@ class PlanTestManualForm(forms.ModelForm):
     """
     class Meta:
         model = PlannedTestManual
-        fields = ['student_group', 'begin_date', 'end_date', 'tasks']
+        fields = ['name', 'student_group', 'begin_date', 'end_date', 'tasks']
 
 
 class CreateTestModuleForm(forms.ModelForm):

@@ -11,6 +11,7 @@
 		{{studentgroup.name}}
 	</h1>
 	<p>Преподаватель группы — <a href="{% url 'admin:user_detail' studentgroup.teacher.id %}">{{studentgroup.teacher.first_name}} {{studentgroup.teacher.last_name}}</a></p>
+	<a href="{% url 'admin:update_group' studentgroup.id %}" class="btn btn-primary">Изменить группу</a>
 	<table class="table">
 		<thead class="thead-light">
 			<tr>

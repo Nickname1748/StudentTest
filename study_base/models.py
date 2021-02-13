@@ -136,6 +136,7 @@ class PlannedTest(models.Model):
         editable=False,
         verbose_name=gettext_lazy('ID')
     )
+    name = models.CharField(max_length=255, verbose_name=gettext_lazy('Name'))
     student_group = models.ForeignKey(
         StudentGroup,
         on_delete=models.PROTECT,
@@ -143,6 +144,9 @@ class PlannedTest(models.Model):
     )
     begin_date = models.DateTimeField(verbose_name=gettext_lazy('Begin date'))
     end_date = models.DateTimeField(verbose_name=gettext_lazy('End date'))
+
+    def __str__(self):
+        return self.name
 
     def is_active(self):
         """

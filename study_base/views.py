@@ -186,6 +186,24 @@ class CreateTestTaskTextView(CreateView):
     success_url = reverse_lazy('study_base:teacher_home')
 
 
+class PlannedTestDetailView(DetailView):
+    """
+    View showing test results.
+    """
+    model = PlannedTest
+    template_name = 'study_base/planned_test_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        planned_test = self.get_object()
+        group = planned_test.student_group
+        results = []
+        for student in group.students.all():
+            results.append((student, planned_test.testattempt_set.filter(student=student)))
+        context['results'] = results
+        return context
+
+
 @method_decorator(group_required("Student"), name='dispatch')
 class StudentHomeView(TemplateView):
     """

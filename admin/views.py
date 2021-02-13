@@ -10,7 +10,7 @@ from django.urls.base import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.utils.decorators import method_decorator
 
 from study_base.models import StudentGroup
@@ -121,6 +121,17 @@ class GroupListView(ListView):
 class StudentGroupCreateView(CreateView):
     """
     Student group create view.
+    """
+    model = StudentGroup
+    template_name = 'admin/group_form.html'
+    form_class = GroupCreateForm
+    success_url = reverse_lazy('admin:group_list')
+
+
+@method_decorator(admin_required, name='dispatch')
+class StudentGroupUpdateView(UpdateView):
+    """
+    Student group update view.
     """
     model = StudentGroup
     template_name = 'admin/group_form.html'
