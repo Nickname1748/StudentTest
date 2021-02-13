@@ -17,7 +17,8 @@
         <h3>{{ plannedtest }}</h3>
         <p><a class="btn btn-primary" href="{% url 'study_base:edit_test' plannedtest.id %}">Редактировать тестирование</a></p>
     {% endfor %}
-    <a class="btn btn-primary" href="{% url 'study_base:plan_test' %}">Запланировать тестирование</a>
+    <a class="btn btn-primary" href="{% url 'study_base:plan_test_modular' %}">Запланировать тестирование по модулю</a>
+    <a class="btn btn-primary" href="{% url 'study_base:plan_test_manual' %}">Запланировать тестирование по выбранным заданиям</a>
     <h2>Добавить задания</h2>
     <a class="btn btn-primary" href="{% url 'study_base:create_module' %}">Создать модуль</a>
     <a class="btn btn-primary" href="{% url 'study_base:create_tasksinglechoice' %}">Создать задание с выбором одного варианта ответа</a>

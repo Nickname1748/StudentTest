@@ -66,6 +66,9 @@ class TestTask(models.Model):
         verbose_name=gettext_lazy('Module')
     )
 
+    def __str__(self):
+        return self.task_description[:100]
+
 
 class TestTaskSingleChoice(TestTask):
     """
@@ -206,7 +209,7 @@ class TestAttempt(models.Model):
         """
         Returns the result in percent.
         """
-        return str(self.result*100) + '%'
+        return str(round(self.result*100, 1)) + '%'
 
 
 class TestAttemptTask(models.Model):

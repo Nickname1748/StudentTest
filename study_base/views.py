@@ -14,10 +14,10 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.utils.decorators import method_decorator
 from django.utils import timezone
 
-from .models import PlannedTestModular, StudentGroup, PlannedTest, TestAttempt, TestModule, TestTaskMultipleChoiceItem, TestTaskSingleChoice, TestTaskSingleChoiceItem, TestTaskMultipleChoice, TestTaskText
+from .models import PlannedTestManual, PlannedTestModular, StudentGroup, PlannedTest, TestAttempt, TestModule, TestTaskMultipleChoiceItem, TestTaskSingleChoice, TestTaskSingleChoiceItem, TestTaskMultipleChoice, TestTaskText
 from .decorators import group_required
 from .forms import (
-    CreateTestTaskMultipleChoiceForm, CreateTestTaskMultipleChoiceItemFormSet, CreateTestTaskTextForm, PlanTestModularForm, CreateTestModuleForm, CreateTestTaskSingleChoiceForm,
+    CreateTestTaskMultipleChoiceForm, CreateTestTaskMultipleChoiceItemFormSet, CreateTestTaskTextForm, PlanTestManualForm, PlanTestModularForm, CreateTestModuleForm, CreateTestTaskSingleChoiceForm,
     CreateTestTaskSingleChoiceItemFormSet, TakeTestTaskSingleChoiceForm, TakeTestTaskMultipleChoiceForm, TakeTestTaskTextForm)
 
 
@@ -56,6 +56,40 @@ class EditTestModularView(UpdateView):
     template_name = 'study_base/plan_test.html'
     form_class = PlanTestModularForm
     success_url = reverse_lazy('study_base:teacher_home')
+
+
+@method_decorator(group_required("Teacher"), name='dispatch')
+class PlanTestManualView(CreateView):
+    """
+    Planning manual test view.
+    """
+    model = PlannedTestManual
+    template_name = 'study_base/plan_test.html'
+    form_class = PlanTestManualForm
+    success_url = reverse_lazy('study_base:teacher_home')
+
+
+@method_decorator(group_required("Teacher"), name='dispatch')
+class EditTestManualView(UpdateView):
+    """
+    Updating manual test view.
+    """
+    model = PlannedTestManual
+    template_name = 'study_base/plan_test.html'
+    form_class = PlanTestManualForm
+    success_url = reverse_lazy('study_base:teacher_home')
+
+
+@group_required("Teacher")
+def edit_test(request, test_id):
+    """
+    Updating test view.
+    """
+    if PlannedTestModular.objects.filter(pk=test_id).exists():
+        return redirect('study_base:edit_test_modular', test_id)
+    if PlannedTestManual.objects.filter(pk=test_id).exists():
+        return redirect('study_base:edit_test_manual', test_id)
+    raise Http404('No such test exist')
 
 
 @method_decorator(group_required("Teacher"), name='dispatch')
@@ -182,6 +216,8 @@ def take_test(request, test_id):
         return redirect('study_base:take_test_task', attempt.id, 0)
     if PlannedTestModular.objects.filter(pk=test_id).exists():
         return take_test_modular(request, test_id)
+    if PlannedTestManual.objects.filter(pk=test_id).exists():
+        return take_test_manual(request, test_id)
     return redirect('study_base:student_home')
 
 
@@ -192,6 +228,19 @@ def take_test_modular(request, test_id):
     test = get_object_or_404(PlannedTestModular, pk=test_id)
     # Generate variant
     tasks = random.sample(list(test.module.testtask_set.all()), test.task_count)
+    attempt = TestAttempt(student=request.user, test=test)
+    attempt.save()
+    attempt.tasks.set(tasks)
+    attempt.save()
+    return redirect('study_base:take_test_task', attempt.id, 0)
+
+
+def take_test_manual(request, test_id):
+    """
+    Take manual test view.
+    """
+    test = get_object_or_404(PlannedTestManual, pk=test_id)
+    tasks = test.tasks.all()
     attempt = TestAttempt(student=request.user, test=test)
     attempt.save()
     attempt.tasks.set(tasks)

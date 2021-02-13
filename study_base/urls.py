@@ -10,8 +10,11 @@ app_name = 'study_base'
 
 urlpatterns = [
     path('teacher/', views.TeacherHomeView.as_view(), name='teacher_home'),
-    path('teacher/plan_test/', views.PlanTestModularView.as_view(), name='plan_test'),
-    path('teacher/edit_test/<uuid:pk>/', views.EditTestModularView.as_view(), name='edit_test'),
+    path('teacher/edit_test/<uuid:test_id>/', views.edit_test, name='edit_test'),
+    path('teacher/plan_test_modular/', views.PlanTestModularView.as_view(), name='plan_test_modular'),
+    path('teacher/edit_test_modular/<uuid:pk>/', views.EditTestModularView.as_view(), name='edit_test_modular'),
+    path('teacher/plan_test_manual/', views.PlanTestManualView.as_view(), name='plan_test_manual'),
+    path('teacher/edit_test_manual/<uuid:pk>/', views.EditTestManualView.as_view(), name='edit_test_manual'),
     path('teacher/create_module/', views.CreateTestModuleView.as_view(), name='create_module'),
     path('teacher/edit_module/<uuid:pk>/', views.EditTestModuleView.as_view(), name='edit_module'),
     path('teacher/create_tasksinglechoice/', views.CreateTestTaskSingleChoiceView.as_view(), name='create_tasksinglechoice'),
