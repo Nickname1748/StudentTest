@@ -3,8 +3,9 @@ This module contains test views.
 """
 
 import random
-from django.http.response import Http404
+import ast
 
+from django.http.response import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
@@ -13,11 +14,11 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.utils.decorators import method_decorator
 from django.utils import timezone
 
-from .models import PlannedTestModular, StudentGroup, PlannedTest, TestAttempt, TestModule, TestTaskSingleChoice, TestTaskSingleChoiceItem
+from .models import PlannedTestModular, StudentGroup, PlannedTest, TestAttempt, TestModule, TestTaskMultipleChoiceItem, TestTaskSingleChoice, TestTaskSingleChoiceItem, TestTaskMultipleChoice
 from .decorators import group_required
 from .forms import (
-    PlanTestModularForm, CreateTestModuleForm, CreateTestTaskSingleChoiceForm,
-    CreateTestTaskSingleChoiceItemFormSet, TakeTestTaskSingleChoiceForm)
+    CreateTestTaskMultipleChoiceForm, CreateTestTaskMultipleChoiceItemFormSet, PlanTestModularForm, CreateTestModuleForm, CreateTestTaskSingleChoiceForm,
+    CreateTestTaskSingleChoiceItemFormSet, TakeTestTaskSingleChoiceForm, TakeTestTaskMultipleChoiceForm)
 
 
 @method_decorator(group_required("Teacher"), name='dispatch')
@@ -110,6 +111,37 @@ class CreateTestTaskSingleChoiceView(CreateView):
             return self.form_invalid(form)
 
 
+@method_decorator(group_required("Teacher"), name='dispatch')
+class CreateTestTaskMultipleChoiceView(CreateView):
+    """
+    Creating multiple choice test task view.
+    """
+    template_name = 'study_base/create_task.html'
+    form_class = CreateTestTaskMultipleChoiceForm
+    success_url = reverse_lazy('study_base:teacher_home')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['formset'] = CreateTestTaskMultipleChoiceItemFormSet(self.request.POST)
+        else:
+            context['formset'] = CreateTestTaskMultipleChoiceItemFormSet()
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        formset = context['formset']
+        if formset.is_valid():
+            self.object = form.save()
+            for cleaned_data in formset.cleaned_data:
+                if len(cleaned_data) > 0:
+                    item = TestTaskMultipleChoiceItem(task=self.object, **cleaned_data)
+                    item.save()
+            return super().form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+
 @method_decorator(group_required("Student"), name='dispatch')
 class StudentHomeView(TemplateView):
     """
@@ -168,6 +200,8 @@ def take_test_task(request, attempt_id, task_num):
     task = attempt.tasks.all()[task_num]
     if TestTaskSingleChoice.objects.filter(id=task.id).exists():
         return take_test_task_single_choice(request, attempt, task, task_num)
+    if TestTaskMultipleChoice.objects.filter(id=task.id).exists():
+        return take_test_task_multiple_choice(request, attempt, task, task_num)
     return redirect('study_base:student_home')
 
 
@@ -194,6 +228,29 @@ def take_test_task_single_choice(request, attempt, task, task_num):
         return render(request, 'study_base/take_test.html', context)
 
 
+def take_test_task_multiple_choice(request, attempt, task, task_num):
+    """
+    Test task multiple choice view.
+    """
+    items = task.testtaskmultiplechoice.testtaskmultiplechoiceitem_set.all()
+    choices = [(item.id, item.text) for item in items]
+    if request.method == 'POST':
+        form = TakeTestTaskMultipleChoiceForm(request.POST, choices=choices)
+        if form.is_valid():
+            answer = form.cleaned_data['answer']
+            attempt_task = task.testattempttask_set.filter(attempt=attempt)[0]
+            attempt_task.answer = answer
+            attempt_task.save()
+        if task_num+1 >= attempt.tasks.count():
+            return end_test_attempt(request, attempt)
+        else:
+            return redirect('study_base:take_test_task', attempt.id, task_num+1)
+    else:
+        form = TakeTestTaskMultipleChoiceForm(choices=choices)
+        context = {'form': form, 'text': task.task_description}
+        return render(request, 'study_base/take_test.html', context)
+
+
 def end_test_attempt(request, attempt):
     """
     Ends test attempt.
@@ -207,6 +264,9 @@ def end_test_attempt(request, attempt):
         if TestTaskSingleChoice.objects.filter(id=task.id).exists():
             if assert_test_task_single_choice(attempt_task.answer):
                 right += 1
+        if TestTaskMultipleChoice.objects.filter(id=task.id).exists():
+            if assert_test_task_multiple_choice(attempt_task.task, attempt_task.answer):
+                right += 1
     result = right / total
     attempt.result = result
     attempt.save()
@@ -215,10 +275,24 @@ def end_test_attempt(request, attempt):
 
 def assert_test_task_single_choice(answer):
     """
-    Checks if answer is right
+    Checks if answer is right in single choice task
     """
     chosen_item = TestTaskSingleChoiceItem.objects.get(pk=answer)
     return chosen_item.is_right
+
+
+def assert_test_task_multiple_choice(task, answer):
+    """
+    Checks if answer is right in multiple choice task
+    """
+    answer = ast.literal_eval(answer)
+    items = task.testtaskmultiplechoice.testtaskmultiplechoiceitem_set.all()
+    for item in items:
+        if item.is_right and str(item.id) not in answer:
+            return False
+        if not item.is_right and str(item.id) in answer:
+            return False
+    return True
 
 
 @method_decorator(group_required("Student"), name='dispatch')

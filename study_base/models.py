@@ -2,7 +2,6 @@
 This module contains essential study and test modules
 """
 
-from typing import get_args
 import uuid
 
 from django.db import models
@@ -202,7 +201,7 @@ class TestAttempt(models.Model):
         if self.finish_date:
             return True
         return False
-    
+
     def result_percent(self):
         """
         Returns the result in percent.

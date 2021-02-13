@@ -4,7 +4,7 @@ This module contains study forms.
 
 from django import forms
 
-from .models import PlannedTestModular, TestModule, TestTaskSingleChoice, TestTaskSingleChoiceItem
+from .models import PlannedTestModular, TestModule, TestTaskMultipleChoice, TestTaskMultipleChoiceItem, TestTaskSingleChoice, TestTaskSingleChoiceItem
 
 
 class PlanTestModularForm(forms.ModelForm):
@@ -34,7 +34,19 @@ class CreateTestTaskSingleChoiceItemForm(forms.ModelForm):
         fields = ['text', 'is_right']
 
 
+class CreateTestTaskMultipleChoiceItemForm(forms.ModelForm):
+    """
+    Form for creating test multiple choice task item.
+    """
+    class Meta:
+        model = TestTaskMultipleChoiceItem
+        fields = ['text', 'is_right']
+
+
 CreateTestTaskSingleChoiceItemFormSet = forms.formset_factory(CreateTestTaskSingleChoiceItemForm)
+
+
+CreateTestTaskMultipleChoiceItemFormSet = forms.formset_factory(CreateTestTaskMultipleChoiceItemForm)
 
 
 class CreateTestTaskSingleChoiceForm(forms.ModelForm):
@@ -43,6 +55,15 @@ class CreateTestTaskSingleChoiceForm(forms.ModelForm):
     """
     class Meta:
         model = TestTaskSingleChoice
+        fields = ['task_description', 'module']
+
+
+class CreateTestTaskMultipleChoiceForm(forms.ModelForm):
+    """
+    Form for creating test multiple choice task.
+    """
+    class Meta:
+        model = TestTaskMultipleChoice
         fields = ['task_description', 'module']
 
 
@@ -55,5 +76,16 @@ class TakeTestTaskSingleChoiceForm(forms.Form):
     def __init__(self, *args, **kwargs):
         choices = kwargs.pop('choices', ())
         super().__init__(*args, **kwargs)
-        #self.answer = forms.ChoiceField(choices=choices)
+        self.fields['answer'].choices = choices
+
+
+class TakeTestTaskMultipleChoiceForm(forms.Form):
+    """
+    Form for taking test multiple choice task.
+    """
+    answer = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple())
+
+    def __init__(self, *args, **kwargs):
+        choices = kwargs.pop('choices', ())
+        super().__init__(*args, **kwargs)
         self.fields['answer'].choices = choices
