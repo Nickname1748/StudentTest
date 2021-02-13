@@ -22,18 +22,20 @@
             {% render_field field class="form-control" %}
         </div>
         {% endfor %}
-        {{ formset.management_form }}
-        {% for formset_form in formset %}
-            <div class="formset-item">
-            {% for field in formset_form.visible_fields %}
-            <div class="form-group">
-                {{ field.label_tag }}
-                {% render_field field class="form-control" %}
-            </div>
+        {% if formset %}
+            {{ formset.management_form }}
+            {% for formset_form in formset %}
+                <div class="formset-item">
+                {% for field in formset_form.visible_fields %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {% render_field field class="form-control" %}
+                </div>
+                {% endfor %}
+                </div>
             {% endfor %}
-            </div>
-        {% endfor %}
-        <input type="button" class="btn btn-primary" value="Добавить вариант ответа" id="add_more">
+            <input type="button" class="btn btn-primary" value="Добавить вариант ответа" id="add_more">
+        {% endif %}
         <input type="submit" class="btn btn-primary" value="Создать">
         <script>
             $('#add_more').click(function() {

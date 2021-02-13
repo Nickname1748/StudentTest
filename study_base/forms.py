@@ -4,7 +4,7 @@ This module contains study forms.
 
 from django import forms
 
-from .models import PlannedTestModular, TestModule, TestTaskMultipleChoice, TestTaskMultipleChoiceItem, TestTaskSingleChoice, TestTaskSingleChoiceItem
+from .models import PlannedTestModular, TestModule, TestTaskMultipleChoice, TestTaskMultipleChoiceItem, TestTaskSingleChoice, TestTaskSingleChoiceItem, TestTaskText
 
 
 class PlanTestModularForm(forms.ModelForm):
@@ -67,6 +67,15 @@ class CreateTestTaskMultipleChoiceForm(forms.ModelForm):
         fields = ['task_description', 'module']
 
 
+class CreateTestTaskTextForm(forms.ModelForm):
+    """
+    Form for creating test text task.
+    """
+    class Meta:
+        model = TestTaskText
+        fields = ['task_description', 'module', 'answer']
+
+
 class TakeTestTaskSingleChoiceForm(forms.Form):
     """
     Form for taking test single choice task.
@@ -89,3 +98,10 @@ class TakeTestTaskMultipleChoiceForm(forms.Form):
         choices = kwargs.pop('choices', ())
         super().__init__(*args, **kwargs)
         self.fields['answer'].choices = choices
+
+
+class TakeTestTaskTextForm(forms.Form):
+    """
+    Form for taking test text task.
+    """
+    answer = forms.CharField(max_length=255)

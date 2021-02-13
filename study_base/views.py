@@ -14,11 +14,11 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.utils.decorators import method_decorator
 from django.utils import timezone
 
-from .models import PlannedTestModular, StudentGroup, PlannedTest, TestAttempt, TestModule, TestTaskMultipleChoiceItem, TestTaskSingleChoice, TestTaskSingleChoiceItem, TestTaskMultipleChoice
+from .models import PlannedTestModular, StudentGroup, PlannedTest, TestAttempt, TestModule, TestTaskMultipleChoiceItem, TestTaskSingleChoice, TestTaskSingleChoiceItem, TestTaskMultipleChoice, TestTaskText
 from .decorators import group_required
 from .forms import (
-    CreateTestTaskMultipleChoiceForm, CreateTestTaskMultipleChoiceItemFormSet, PlanTestModularForm, CreateTestModuleForm, CreateTestTaskSingleChoiceForm,
-    CreateTestTaskSingleChoiceItemFormSet, TakeTestTaskSingleChoiceForm, TakeTestTaskMultipleChoiceForm)
+    CreateTestTaskMultipleChoiceForm, CreateTestTaskMultipleChoiceItemFormSet, CreateTestTaskTextForm, PlanTestModularForm, CreateTestModuleForm, CreateTestTaskSingleChoiceForm,
+    CreateTestTaskSingleChoiceItemFormSet, TakeTestTaskSingleChoiceForm, TakeTestTaskMultipleChoiceForm, TakeTestTaskTextForm)
 
 
 @method_decorator(group_required("Teacher"), name='dispatch')
@@ -142,6 +142,16 @@ class CreateTestTaskMultipleChoiceView(CreateView):
             return self.form_invalid(form)
 
 
+@method_decorator(group_required("Teacher"), name='dispatch')
+class CreateTestTaskTextView(CreateView):
+    """
+    Creating text test task view.
+    """
+    template_name = 'study_base/create_task.html'
+    form_class = CreateTestTaskTextForm
+    success_url = reverse_lazy('study_base:teacher_home')
+
+
 @method_decorator(group_required("Student"), name='dispatch')
 class StudentHomeView(TemplateView):
     """
@@ -202,6 +212,8 @@ def take_test_task(request, attempt_id, task_num):
         return take_test_task_single_choice(request, attempt, task, task_num)
     if TestTaskMultipleChoice.objects.filter(id=task.id).exists():
         return take_test_task_multiple_choice(request, attempt, task, task_num)
+    if TestTaskText.objects.filter(id=task.id).exists():
+        return take_test_task_text(request, attempt, task, task_num)
     return redirect('study_base:student_home')
 
 
@@ -251,6 +263,27 @@ def take_test_task_multiple_choice(request, attempt, task, task_num):
         return render(request, 'study_base/take_test.html', context)
 
 
+def take_test_task_text(request, attempt, task, task_num):
+    """
+    Test task text view.
+    """
+    if request.method == 'POST':
+        form = TakeTestTaskTextForm(request.POST)
+        if form.is_valid():
+            answer = form.cleaned_data['answer']
+            attempt_task = task.testattempttask_set.filter(attempt=attempt)[0]
+            attempt_task.answer = answer
+            attempt_task.save()
+        if task_num+1 >= attempt.tasks.count():
+            return end_test_attempt(request, attempt)
+        else:
+            return redirect('study_base:take_test_task', attempt.id, task_num+1)
+    else:
+        form = TakeTestTaskTextForm()
+        context = {'form': form, 'text': task.task_description}
+        return render(request, 'study_base/take_test.html', context)
+
+
 def end_test_attempt(request, attempt):
     """
     Ends test attempt.
@@ -264,8 +297,11 @@ def end_test_attempt(request, attempt):
         if TestTaskSingleChoice.objects.filter(id=task.id).exists():
             if assert_test_task_single_choice(attempt_task.answer):
                 right += 1
-        if TestTaskMultipleChoice.objects.filter(id=task.id).exists():
+        elif TestTaskMultipleChoice.objects.filter(id=task.id).exists():
             if assert_test_task_multiple_choice(attempt_task.task, attempt_task.answer):
+                right += 1
+        elif TestTaskText.objects.filter(id=task.id).exists():
+            if assert_test_task_text(attempt_task.task, attempt_task.answer):
                 right += 1
     result = right / total
     attempt.result = result
@@ -293,6 +329,13 @@ def assert_test_task_multiple_choice(task, answer):
         if not item.is_right and str(item.id) in answer:
             return False
     return True
+
+
+def assert_test_task_text(task, answer):
+    """
+    Checks if answer is right in text task
+    """
+    return task.testtasktext.answer == answer
 
 
 @method_decorator(group_required("Student"), name='dispatch')
