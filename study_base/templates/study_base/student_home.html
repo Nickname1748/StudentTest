@@ -6,19 +6,49 @@
 
 {% block content %}
     <h1 class="mt-3">Панель студента</h1>
-    {% if studentgroup_list %}
-        <h2 class="mt-2">Группы</h2>
-        {% for studentgroup in studentgroup_list %}
-            <h3>{{ studentgroup.name }}</h3>
-        {% endfor %}
+    <div class="row">
+        <div class="col">
+            {% if studentgroup_list %}
+        <!--<h2 class="mt-2">Группы</h2>-->
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th>Группы</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for studentgroup in studentgroup_list %}
+                <tr>
+                    <td><p>{{ studentgroup.name }}</p></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     {% endif %}
-    {% if plannedtest_list %}
-        <h2 class="mt-2">Запланированные тестирования</h2>
-        {% for plannedtest in plannedtest_list %}
-            <h3>{{ plannedtest }}</h3>
-            {% if plannedtest.is_active %}
-            <a href="{% url 'study_base:take_test' plannedtest.id %}" class="btn btn-primary">Пройти</a>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
+        </div>
+    <div class="col">
+        {% if plannedtest_list %}
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th>
+                        Запланированные тестирования
+                    </th>
+                    <th>
+                        Пройти
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plannedtest in plannedtest_list %}
+                    <tr>
+                        <td>{{ plannedtest }}</td>
+                        <td><a href="{% url 'study_base:take_test' plannedtest.id %}" class="btn btn-primary">Пройти</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+    </div>
 {% endblock %}

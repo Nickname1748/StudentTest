@@ -6,6 +6,7 @@
 
 {% block content %}
 {% load widget_tweaks %}
+    <input type="hidden" name = "form_type" value="{{form_type}}">
     <h1 class="mt-3">Создать задание с выбором варианта ответа</h1>
     {% if form.errors %}
 		{% for field in form %}

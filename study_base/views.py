@@ -129,6 +129,7 @@ class CreateTestTaskSingleChoiceView(CreateView):
             context['formset'] = CreateTestTaskSingleChoiceItemFormSet(self.request.POST)
         else:
             context['formset'] = CreateTestTaskSingleChoiceItemFormSet()
+            context['form_type'] = "single"
         return context
 
     def form_valid(self, form):
@@ -160,6 +161,7 @@ class CreateTestTaskMultipleChoiceView(CreateView):
             context['formset'] = CreateTestTaskMultipleChoiceItemFormSet(self.request.POST)
         else:
             context['formset'] = CreateTestTaskMultipleChoiceItemFormSet()
+            context['form_type'] = "multiple"
         return context
 
     def form_valid(self, form):
