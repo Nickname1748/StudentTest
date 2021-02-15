@@ -9,6 +9,7 @@ from . import views
 app_name = 'study_base'
 
 urlpatterns = [
+    path('', views.index_view, name='index'),
     path('teacher/', views.TeacherHomeView.as_view(), name='teacher_home'),
     path('teacher/edit_test/<uuid:test_id>/', views.edit_test, name='edit_test'),
     path('teacher/plan_test_modular/', views.PlanTestModularView.as_view(), name='plan_test_modular'),

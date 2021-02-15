@@ -15,12 +15,27 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.utils.decorators import method_decorator
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 
 from .models import PlannedTestManual, PlannedTestModular, StudentGroup, PlannedTest, TestAttempt, TestModule, TestTask, TestTaskMultipleChoiceItem, TestTaskSingleChoice, TestTaskSingleChoiceItem, TestTaskMultipleChoice, TestTaskText
 from .decorators import group_required
 from .forms import (
     CreateTestTaskMultipleChoiceForm, CreateTestTaskMultipleChoiceItemFormSet, CreateTestTaskTextForm, PlanTestManualForm, PlanTestModularForm, CreateTestModuleForm, CreateTestTaskSingleChoiceForm,
     CreateTestTaskSingleChoiceItemFormSet, TakeTestTaskSingleChoiceForm, TakeTestTaskMultipleChoiceForm, TakeTestTaskTextForm)
+
+
+@login_required
+def index_view(request):
+    """
+    Index view for study.
+    """
+    if request.user.groups.filter(name="Headteacher").exists():
+        return redirect('study_base:headteacher_home')
+    if request.user.groups.filter(name="Teacher").exists():
+        return redirect('study_base:teacher_home')
+    if request.user.groups.filter(name="Student").exists():
+        return redirect('study_base:student_home')
+    raise Http404('User is not active yet.')
 
 
 @method_decorator(group_required("Teacher"), name='dispatch')

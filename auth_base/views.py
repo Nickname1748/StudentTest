@@ -2,14 +2,27 @@
 This module contains auth_base views
 """
 
+from django.shortcuts import redirect
 from django_registration.backends.activation.views import RegistrationView
 from django.contrib.auth.models import Group
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from .forms import RegisterForm
 
+
+@login_required
+def index_view(request):
+    """
+    Index page.
+    """
+    if request.user.is_staff:
+        return redirect('admin:admin')
+    return redirect('study_base:index')
+
+
 class RegisterView(RegistrationView):
     """
-    Registration view class
+    Registration view class.
     """
     form_class = RegisterForm
     success_url = reverse_lazy('auth_base:registration_complete')
