@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Пользователи
+{% endblock %}
+
+{% block content %}
+{% include "admin/base_admin.html" %}
+	<h1 class = "mt-2">Все пользователи</h1>
+	<div class="input-group">
+	<form id = 'filter' method = 'get'>
+		<select name = 'role' class="custom-select" form='filter'>
+			{% if role == '' %}
+    		<option value = "" selected>Все пользователи</option>
+    		{% else %}
+    		<option value = "" >Все пользователи</option>
+    		{% endif %}
+    		{% if role == 'Student' %}
+    		<option value="Student" selected>Ученики</option>
+    		{% else %}
+    		<option value="Student">Ученики</option>
+    		{% endif %}
+    		{% if role == 'Teacher' %}
+    		<option value="Teacher" selected>Преподаватели</option>
+    		{% else %}
+    		<option value="Teacher">Преподаватели</option>
+    		{% endif %}
+    		{% if role == 'Headteacher' %}
+    		<option value="Headteacher" selected>Администратор учебного процесса</option>
+    		{% else %}
+    		<option value="Headteacher">Администратор учебного процесса</option>
+    		{% endif %}
+    		{% if role == 'Unknown' %}
+    		<option value="Unknown" selected>Неподтверждённые</option>
+    		{% else %}
+    		<option value="Unknown">Неподтверждённые</option>
+    		{% endif %}
+  		</select>
+    	<button type="submit" class="btn btn-primary mt-2 mb-2">Выбрать</button>
+	</form>
+	</div>
+{% if user_list %}
+<div class="user-list mt-2">
+	<table class = "table table-hover">
+		<thead class = 'thead-light'>
+			<tr>
+				<th>Пользователи</th>
+				<th>Роль</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for user in user_list %}
+				<tr>
+					<td>
+						<a href="{% url 'admin:user_detail' user.id %}">{{user.first_name}} {{user.last_name}}</a>
+					</td>
+					<td>
+						{{ user.groups.all.0 }}
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endif %}
+{% include 'admin/paginator.html' %}
+{% endblock %}

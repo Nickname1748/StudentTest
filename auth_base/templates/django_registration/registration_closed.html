@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Регистрация закрыта
+{% endblock %}
+{% block content %}
+    <h1>Регистрация закрыта</h1>
+    <p>Попробуйте позже</p>
+    <a href="{% url 'auth_base:login' %}" class="login-button btn-action">Войти</a>
+{% endblock %}

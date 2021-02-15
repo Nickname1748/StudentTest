@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}
+Панель преподователя
+{% endblock %}
+
+{% block content %}
+    <h1 class="mt-3">Панель преподователя</h1>
+    <div class="row">
+        <div class="col">
+            {% if studentgroup_list %}
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th colspan="2">Группы</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for studentgroup in studentgroup_list %}
+                    <tr>
+                        <td>{{ studentgroup.name }}</td>
+                        <td><a href="{% url 'study_base:group_detail' studentgroup.id %}" class="btn btn-primary">Подробнее</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+        <div class="col">
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Запланированные тестирования</th>
+                        <th>Редактировать</th>
+                        <th>Результаты</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for plannedtest in plannedtest_list %}
+                    <tr>
+                        <td>{{ plannedtest }}</td>
+                        <td><a class="btn btn-primary" href="{% url 'study_base:edit_test' plannedtest.id %}">Редактировать тестирование</a></td>
+                        <td><a class="btn btn-primary" href="{% url 'study_base:planned_test_results' plannedtest.id %}">Результаты</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <a class="btn btn-primary mx-2 my-2" href="{% url 'study_base:plan_test_modular' %}">Запланировать тестирование по модулю</a>
+    <a class="btn btn-primary mx-2 my-2" href="{% url 'study_base:plan_test_manual' %}">Запланировать тестирование по выбранным заданиям</a>
+    <h2>Добавить задания</h2>
+    <a class="btn btn-primary mx-2 my-2" href="{% url 'study_base:create_module' %}">Создать модуль</a>
+    <a class="btn btn-primary mx-2 my-2" href="{% url 'study_base:create_tasksinglechoice' %}">Создать задание с выбором одного варианта ответа</a>
+    <a class="btn btn-primary mx-2 my-2" href="{% url 'study_base:create_taskmultiplechoice' %}">Создать задание с выбором нескольких вариантов ответа</a>
+    <a class="btn btn-primary mx-2 my-2" href="{% url 'study_base:create_tasktext' %}">Создать задание с кратким ответом</a>
+{% endblock %}

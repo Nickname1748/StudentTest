@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+Результаты тестирования
+{% endblock %}
+
+{% block content %}
+    <h1 class="mt-3">Результаты тестирования</h1>
+    <h2>{{ plannedtest.name }}</h2>
+    {% if attempts.exists %}
+    <table class="table">
+        <tr>
+            <th>Дата начала</th>
+            <th>Дата завершения</th>
+            <th>Результат</th>
+        </tr>
+        {% for attempt in attempts %}
+        <tr>
+            <td>{{ attempt.start_date }}</td>
+            {% if attempt.finish_date %}
+            <td>{{ attempt.finish_date }}</td>
+            <td>{{ attempt.result_percent }}</td>
+            {% else %}
+            <td colspan="2">Не завершено</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>Попыток прохождения тестирования нет.</p>
+    {% endif %}
+{% endblock %}

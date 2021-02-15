@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}
+Запланировать тестирование
+{% endblock %}
+
+{% block content %}
+{% load widget_tweaks %}
+    <h1 class="mt-3">Запланировать тестирование</h1>
+    {% if form.errors %}
+		{% for field in form %}
+			{% for error in field.errors %}
+				<div class="alert alert-danger">{{ error|escape }}</div>
+			{% endfor %}
+		{% endfor %}
+	{% endif %}
+    <form method="POST">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+        <div class="form-group">
+            {{ field.label_tag }}
+            {% if field.name == 'begin_date' or field.name == 'end_date' %}
+                {% render_field field class="form-control date" %}
+            {% else %}
+                {% render_field field class="form-control" %}
+            {% endif %}
+        </div>
+        {% endfor %}
+        <input type="submit" class="btn btn-primary" value="Запланировать">
+    </form>
+    <script type="text/javascript">
+        $('.date').datetimepicker({
+            locale: 'ru',
+            format: 'YYYY-MM-DD HH:mm',
+            icons: {
+                time: 'fas fa-clock-o',
+                date: 'fas fa-calendar',
+                up: 'fas fa-chevron-up',
+                down: 'fas fa-chevron-down',
+                previous: 'fas fa-chevron-left',
+                next: 'fas fa-chevron-right',
+                today: 'fas fa-check',
+                clear: 'fas fa-trash',
+                close: 'fas fa-times'
+            }
+        });
+    </script>
+{% endblock %}

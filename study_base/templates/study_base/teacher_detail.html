@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ object.name }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<h1 class="mt-3">
+		{{object.username}}
+	</h1>
+	{% if studentgroup_list %}
+	<table class="table">
+		<thead class="thead-light">
+			<tr>
+				<th colspan="2">Группы</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for studentgroup in studentgroup_list %}
+			<tr>
+				<td>{{ studentgroup.name }}</td>
+				<td><a href="{% url 'study_base:group_detail_head' studentgroup.id %}" class="btn btn-primary">Подробнее</a></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% endif %}
+</div>
+{% endblock %}

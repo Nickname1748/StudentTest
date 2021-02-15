@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}
+Результаты тестирования
+{% endblock %}
+
+{% block content %}
+    <h1 class="mt-3">Результаты тестирования</h1>
+    <h2>{{ plannedtest.name }}</h2>
+    <table class="table">
+        <tr>
+            <th>Студент</th>
+            <th>Дата начала</th>
+            <th>Дата завершения</th>
+            <th>Результат</th>
+        </tr>
+        {% for student, attempts in results %}
+            {% if not attempts.exists %}
+                <tr>
+                    <td>{{ student }}</td>
+                    <td colspan="3">Не приступал</td>
+                </tr>
+            {% else %}
+                {% for attempt in attempts %}
+                <tr>
+                    <td>{{ student }}</td>
+                    <td>{{ attempt.start_date }}</td>
+                    {% if attempt.finish_date %}
+                    <td>{{ attempt.finish_date }}</td>
+                    <td>{{ attempt.result_percent }}</td>
+                    {% else %}
+                    <td colspan="2">Не завершено</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </table>
+{% endblock %}
