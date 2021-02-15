@@ -1,0 +1,25 @@
+name: Run tests
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Test
+      run: |
+        python -m coverage run --branch --source=admin,auth_base,study_base manage.py test
+    - name: Coveralls
+      run: |
+        python -m pip install --upgrade coveralls
+        coveralls
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
