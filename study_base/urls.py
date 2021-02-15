@@ -21,8 +21,15 @@ urlpatterns = [
     path('teacher/create_taskmultiplechoice/', views.CreateTestTaskMultipleChoiceView.as_view(), name='create_taskmultiplechoice'),
     path('teacher/create_tasktext/', views.CreateTestTaskTextView.as_view(), name='create_tasktext'),
     path('teacher/planned_test_results/<uuid:pk>/', views.PlannedTestDetailView.as_view(), name='planned_test_results'),
+    path('teacher/group/<uuid:pk>/', views.GroupDetailView.as_view(), name='group_detail'),
+    path('headteacher/', views.HeadTeacherHomeView.as_view(), name='headteacher_home'),
+    path('headteacher/teacher/<int:pk>/', views.TeacherDetailView.as_view(), name='teacher_detail'),
+    path('headteacher/group/<uuid:pk>/', views.HeadGroupDetailView.as_view(), name='group_detail_head'),
+    path('headteacher/module/<uuid:pk>/', views.ModuleDetailView.as_view(), name='module_detail'),
+    path('headteacher/task/<uuid:pk>/', views.TaskDetailView.as_view(), name='task_detail'),
     path('student/', views.StudentHomeView.as_view(), name='student_home'),
     path('student/take_test/<uuid:test_id>/', views.take_test, name='take_test'),
     path('student/take_test_task/<uuid:attempt_id>/<int:task_num>/', views.take_test_task, name='take_test_task'),
-    path('student/attempt_results/<uuid:pk>/', views.TestAttemptResultsView.as_view(), name='attempt_results')
+    path('student/attempt_results/<uuid:pk>/', views.TestAttemptResultsView.as_view(), name='attempt_results'),
+    path('student/attempt_list/<uuid:pk>/', views.PlannedTestAttemptsView.as_view(), name='attempt_list')
 ]

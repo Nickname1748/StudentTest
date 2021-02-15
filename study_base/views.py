@@ -4,6 +4,7 @@ This module contains test views.
 
 import random
 import ast
+from django.contrib.auth.models import Group
 
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404, redirect, render
@@ -13,8 +14,9 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.utils.decorators import method_decorator
 from django.utils import timezone
+from django.contrib.auth import get_user_model
 
-from .models import PlannedTestManual, PlannedTestModular, StudentGroup, PlannedTest, TestAttempt, TestModule, TestTaskMultipleChoiceItem, TestTaskSingleChoice, TestTaskSingleChoiceItem, TestTaskMultipleChoice, TestTaskText
+from .models import PlannedTestManual, PlannedTestModular, StudentGroup, PlannedTest, TestAttempt, TestModule, TestTask, TestTaskMultipleChoiceItem, TestTaskSingleChoice, TestTaskSingleChoiceItem, TestTaskMultipleChoice, TestTaskText
 from .decorators import group_required
 from .forms import (
     CreateTestTaskMultipleChoiceForm, CreateTestTaskMultipleChoiceItemFormSet, CreateTestTaskTextForm, PlanTestManualForm, PlanTestModularForm, CreateTestModuleForm, CreateTestTaskSingleChoiceForm,
@@ -188,6 +190,7 @@ class CreateTestTaskTextView(CreateView):
     success_url = reverse_lazy('study_base:teacher_home')
 
 
+@method_decorator(group_required("Teacher", "Headteacher"), name='dispatch')
 class PlannedTestDetailView(DetailView):
     """
     View showing test results.
@@ -203,6 +206,98 @@ class PlannedTestDetailView(DetailView):
         for student in group.students.all():
             results.append((student, planned_test.testattempt_set.filter(student=student)))
         context['results'] = results
+        return context
+
+
+@method_decorator(group_required("Teacher"), name='dispatch')
+class GroupDetailView(DetailView):
+    """
+    Group detail view.
+    """
+    model = StudentGroup
+    template_name = 'study_base/group_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tests'] = self.get_object().plannedtest_set.all()
+        return context
+
+
+@method_decorator(group_required("Headteacher"), name='dispatch')
+class HeadTeacherHomeView(TemplateView):
+    """
+    Head teacher home view.
+    """
+    template_name = 'study_base/headteacher_home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['studentgroup_list'] = StudentGroup.objects.all()
+        context['modules'] = TestModule.objects.all()
+        return context
+
+
+@method_decorator(group_required("Headteacher"), name='dispatch')
+class HeadGroupDetailView(DetailView):
+    """
+    Group detail view for headteachers.
+    """
+    model = StudentGroup
+    template_name = 'study_base/group_detail_head.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tests'] = self.get_object().plannedtest_set.all()
+        return context
+
+
+@method_decorator(group_required("Headteacher"), name='dispatch')
+class TeacherDetailView(DetailView):
+    """
+    Teacher detail view.
+    """
+    model = get_user_model()
+    template_name = 'study_base/teacher_detail.html'
+    queryset = get_object_or_404(Group, name="Teacher").user_set.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['studentgroup_list'] = self.get_object().group_teacher.all()
+        return context
+
+
+@method_decorator(group_required("Headteacher"), name='dispatch')
+class ModuleDetailView(DetailView):
+    """
+    Module detail view
+    """
+    model = TestModule
+    template_name = 'study_base/module_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tasks'] = self.get_object().testtask_set.all()
+        return context
+
+
+@method_decorator(group_required("Headteacher"), name='dispatch')
+class TaskDetailView(DetailView):
+    """
+    Task detail view
+    """
+    model = TestTask
+    template_name = 'study_base/task_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        singlechoice = TestTaskSingleChoice.objects.filter(pk=self.get_object().id).exists()
+        multiplechoice = TestTaskMultipleChoice.objects.filter(pk=self.get_object().id).exists()
+        context['singlechoice'] = singlechoice
+        context['multiplechoice'] = multiplechoice
+        if singlechoice:
+            context['choices'] = self.get_object().testtasksinglechoice.testtasksinglechoiceitem_set.all()
+        elif multiplechoice:
+            context['choices'] = self.get_object().testtaskmultiplechoice.testtaskmultiplechoiceitem_set.all()
         return context
 
 
@@ -414,3 +509,17 @@ class TestAttemptResultsView(DetailView):
     """
     model = TestAttempt
     template_name = 'study_base/attempt_results.html'
+
+
+@method_decorator(group_required("Student"), name='dispatch')
+class PlannedTestAttemptsView(DetailView):
+    """
+    Show test attempts of student.
+    """
+    model = PlannedTest
+    template_name = 'study_base/attempt_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['attempts'] = self.get_object().testattempt_set.filter(student=self.request.user)
+        return context

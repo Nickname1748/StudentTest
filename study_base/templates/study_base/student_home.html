@@ -31,19 +31,17 @@
         <table class="table">
             <thead class="thead-light">
                 <tr>
-                    <th>
-                        Запланированные тестирования
-                    </th>
-                    <th>
-                        Пройти
-                    </th>
+                    <th>Запланированные тестирования</th>
+                    <th>Пройти</th>
+                    <th>Результаты</th>
                 </tr>
             </thead>
             <tbody>
                 {% for plannedtest in plannedtest_list %}
                     <tr>
                         <td>{{ plannedtest }}</td>
-                        <td><a href="{% url 'study_base:take_test' plannedtest.id %}" class="btn btn-primary">Пройти</a></td>
+                        <td><a href="{% url 'study_base:take_test' plannedtest.id %}" class="btn btn-primary {% if not plannedtest.is_active %}disabled{% endif %}">Пройти</a></td>
+                        <td><a href="{% url 'study_base:attempt_list' plannedtest.id %}" class="btn btn-primary">Результаты</a></td>
                     </tr>
                 {% endfor %}
             </tbody>
