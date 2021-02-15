@@ -16,6 +16,7 @@ from django.utils.decorators import method_decorator
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import gettext as _
 
 from .models import PlannedTestManual, PlannedTestModular, StudentGroup, PlannedTest, TestAttempt, TestModule, TestTask, TestTaskMultipleChoiceItem, TestTaskSingleChoice, TestTaskSingleChoiceItem, TestTaskMultipleChoice, TestTaskText
 from .decorators import group_required
@@ -106,7 +107,7 @@ def edit_test(request, test_id):
         return redirect('study_base:edit_test_modular', test_id)
     if PlannedTestManual.objects.filter(pk=test_id).exists():
         return redirect('study_base:edit_test_manual', test_id)
-    raise Http404('No such test exist')
+    raise Http404(_('No such test exist'))
 
 
 @method_decorator(group_required("Teacher"), name='dispatch')
@@ -388,7 +389,7 @@ def take_test_task(request, attempt_id, task_num):
     """
     attempt = get_object_or_404(TestAttempt, pk=attempt_id)
     if task_num >= attempt.tasks.count():
-        raise Http404("Wrong task number")
+        raise Http404(_("Wrong task number"))
     task = attempt.tasks.all()[task_num]
     if TestTaskSingleChoice.objects.filter(id=task.id).exists():
         return take_test_task_single_choice(request, attempt, task, task_num)

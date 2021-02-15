@@ -12,6 +12,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 
 from study_base.models import StudentGroup
 from .decorators import admin_required
@@ -50,21 +51,17 @@ def user_details(request, user_id):
         return redirect(request.path)
     else:
         form = UpdateRoleForm()
-        # try:
-        #     user = User.objects.get(pk = user_id)
-        # except User.DoesNotExist:
-        #     raise Http404("Данного пользователя не существует")
         user = get_object_or_404(get_user_model(), pk=user_id)
         context = {}
         context['user'] = user
-        if user.groups.filter(name = 'Unknown').exists():
-            context['role'] = 'Неподтверждённый'
-        elif user.groups.filter(name = 'Student').exists():
-            context['role'] = 'Ученик'
-        elif user.groups.filter(name = 'Teacher').exists():
-            context['role'] = 'Преподаватель'
-        elif user.groups.filter(name = 'Headteacher').exists():
-            context['role'] = 'Администратор учебного процесса'
+        if user.groups.filter(name='Unknown').exists():
+            context['role'] = _('Unknown')
+        elif user.groups.filter(name='Student').exists():
+            context['role'] = _('Student')
+        elif user.groups.filter(name='Teacher').exists():
+            context['role'] = _('Teacher')
+        elif user.groups.filter(name='Headteacher').exists():
+            context['role'] = _('Headteacher')
         context['form'] = form
     return render(request, 'admin/user_details.html', context=context)
 
@@ -78,7 +75,7 @@ class GroupDetailView(DetailView):
     template_name = 'admin/group_detail.html'
 
 
-@method_decorator(admin_required, name = 'dispatch')
+@method_decorator(admin_required, name='dispatch')
 class UserListView(ListView):
     """
     User list view.
@@ -113,7 +110,7 @@ class GroupListView(ListView):
         query = self.request.GET.get('q', '')
         queryset = super().get_queryset()
         if query != '':
-            queryset = queryset.filter(name__icontains = query)
+            queryset = queryset.filter(name__icontains=query)
         return queryset
 
 
