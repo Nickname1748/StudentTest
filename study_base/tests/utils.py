@@ -190,7 +190,7 @@ def create_test_manual(student_group=None):
     """
     if not student_group:
         student_group = create_student_group()
-    planned_test = PlannedTest.objects.create(
+    planned_test = PlannedTestManual.objects.create(
         name="ManualTest1",
         student_group=student_group,
         begin_date=(timezone.now() - timezone.timedelta(days=1)),

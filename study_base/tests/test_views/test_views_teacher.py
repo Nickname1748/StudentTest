@@ -84,7 +84,7 @@ class EditTestViewTests(TestCase):
         """
         If user is not authenticated, he is redirected to login page.
         """
-        url = reverse('study_base:edit_test', self.empty_id)
+        url = reverse('study_base:edit_test', args=[self.empty_id])
         response = self.client.get(url)
         self.assertRedirects(response, reverse('auth_base:login') + '?next=' + url)
 
@@ -92,7 +92,7 @@ class EditTestViewTests(TestCase):
         """
         If user is not teacher, he is redirected to login page.
         """
-        url = reverse('study_base:edit_test', self.empty_id)
+        url = reverse('study_base:edit_test', args=[self.empty_id])
         self.client.login(**test_credentials)
         response = self.client.get(url)
         self.assertRedirects(response, reverse('auth_base:login') + '?next=' + url)
@@ -101,7 +101,7 @@ class EditTestViewTests(TestCase):
         """
         If test is nonexistent, error 404 is returned.
         """
-        url = reverse('study_base:edit_test', self.empty_id)
+        url = reverse('study_base:edit_test', args=[self.empty_id])
         self.client.login(**teacher_credentials)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
@@ -110,16 +110,16 @@ class EditTestViewTests(TestCase):
         """
         If test is modular, user is redirected to edit modular test view.
         """
-        url = reverse('study_base:edit_test', self.modular_id)
+        url = reverse('study_base:edit_test', args=[self.modular_id])
         self.client.login(**teacher_credentials)
         response = self.client.get(url)
-        self.assertRedirects(response, reverse('study_base:edit_test_modular', self.modular_id))
+        self.assertRedirects(response, reverse('study_base:edit_test_modular', args=[self.modular_id]))
 
     def test_edit_test_view_get_login_teacher_manual(self):
         """
         If test is manual, user is redirected to edit manual test view.
         """
-        url = reverse('study_base:edit_test', self.manual_id)
+        url = reverse('study_base:edit_test', args=[self.manual_id])
         self.client.login(**teacher_credentials)
         response = self.client.get(url)
-        self.assertRedirects(response, reverse('study_base:edit_test_manual', self.manual_id))
+        self.assertRedirects(response, reverse('study_base:edit_test_manual', args=[self.manual_id]))
