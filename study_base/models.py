@@ -1,6 +1,6 @@
 # Student Test System
-# Copyright (C) 2020 Andrey Shmaykhel <shmayhel.andrey@gmail.com>,
-#                    Alexander Solovyov
+# Copyright (C) 2020-2021 Andrey Shmaykhel <shmayhel.andrey@gmail.com>,
+#                         Alexander Solovyov
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -230,7 +230,7 @@ class TestAttempt(models.Model):
         """
         Returns the result in percent.
         """
-        return str(round(self.result*100, 1)) + '%'
+        return "{:.1f}".format(self.result*100) + '%'
 
 
 class TestAttemptTask(models.Model):

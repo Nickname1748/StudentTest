@@ -1,6 +1,6 @@
 # Student Test System
-# Copyright (C) 2020 Andrey Shmaykhel <shmayhel.andrey@gmail.com>,
-#                    Alexander Solovyov
+# Copyright (C) 2020-2021 Andrey Shmaykhel <shmayhel.andrey@gmail.com>,
+#                         Alexander Solovyov
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -45,15 +45,15 @@ class RegisterTestViews(TestCase):
         '''
         response = self.client.post(self.url,
         {
-            'username':'donaldtrump',
-            'first_name':'Donald',
-            'last_name':'Trump',
-            'email':'donaldtrump@gmail.com',
-            'password1':'maga2020!',
-            'password2':'maga2020!'
+            'username': 'testuser1',
+            'first_name': 'Test',
+            'last_name': 'Testov',
+            'email': 'test@example.com',
+            'password1': 'sdfkjhsdaofoih',
+            'password2': 'sdfkjhsdaofoih'
         })
         self.assertRedirects(response, reverse('auth_base:registration_complete'))
-        self.assertTrue(check_user_in_group('donaldtrump', 'Unknown'))
+        self.assertTrue(check_user_in_group('testuser1', 'Unknown'))
 
     def test_registration_failes(self):
         '''

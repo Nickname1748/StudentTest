@@ -1,6 +1,6 @@
 # Student Test System
-# Copyright (C) 2020 Andrey Shmaykhel <shmayhel.andrey@gmail.com>,
-#                    Alexander Solovyov
+# Copyright (C) 2020-2021 Andrey Shmaykhel <shmayhel.andrey@gmail.com>,
+#                         Alexander Solovyov
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
