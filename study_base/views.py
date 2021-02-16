@@ -294,8 +294,7 @@ class TeacherDetailView(DetailView):
 
     def get_queryset(self):
         return get_object_or_404(Group, name="Teacher").user_set.all()
-        
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['studentgroup_list'] = self.get_object().group_teacher.all()

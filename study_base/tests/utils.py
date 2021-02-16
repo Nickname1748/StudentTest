@@ -150,12 +150,12 @@ def create_test_module():
     return module
 
 
-def create_planned_test(student_group=None):
+def create_planned_test(student_group=None, teacher=None):
     """
     Creates planned test.
     """
     if not student_group:
-        student_group = create_student_group()
+        student_group = create_student_group(teacher=teacher)
     planned_test = PlannedTest.objects.create(
         name="Test1",
         student_group=student_group,
@@ -165,12 +165,12 @@ def create_planned_test(student_group=None):
     return planned_test
 
 
-def create_test_modular(student_group=None, module=None):
+def create_test_modular(student_group=None, module=None, teacher=None):
     """
     Creates modular test.
     """
     if not student_group:
-        student_group = create_student_group()
+        student_group = create_student_group(teacher=teacher)
     if not module:
         module = create_test_module()
     test_modular = PlannedTestModular.objects.create(
@@ -184,12 +184,12 @@ def create_test_modular(student_group=None, module=None):
     return test_modular
 
 
-def create_test_manual(student_group=None):
+def create_test_manual(student_group=None, teacher=None):
     """
     Creates manual test.
     """
     if not student_group:
-        student_group = create_student_group()
+        student_group = create_student_group(teacher=teacher)
     planned_test = PlannedTestManual.objects.create(
         name="ManualTest1",
         student_group=student_group,
