@@ -23,13 +23,19 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.utils import timezone
 
-from study_base.models import StudentGroup, PlannedTest
+from study_base.models import StudentGroup, TestModule, PlannedTest, PlannedTestModular, PlannedTestManual
 
 
-admin_credentials = {
-    'username': 'admin',
+test_credentials = {
+    'username': 'testuser',
     'password': 'testpass'
 }
+
+
+# admin_credentials = {
+#     'username': 'admin',
+#     'password': 'testpass'
+# }
 
 
 teacher_credentials = {
@@ -50,32 +56,32 @@ student_credentials = {
 }
 
 
-# def create_test_user():
-#     """
-#     Creates test user.
-#     """
-#     user = get_user_model().objects.create_user(
-#         **test_credentials,
-#         email='test@example.com',
-#         first_name='Name',
-#         last_name='Surname'
-#     )
-#     return user
-
-
-def create_admin_user():
+def create_test_user():
     """
-    Creates admin user.
+    Creates test user.
     """
-    admin = get_user_model().objects.create_user(
-        **admin_credentials,
-        email='admin@example.com',
-        first_name='AdminName',
-        last_name='AdminSurname'
+    user = get_user_model().objects.create_user(
+        **test_credentials,
+        email='test@example.com',
+        first_name='Name',
+        last_name='Surname'
     )
-    admin.is_staff = True
-    admin.save()
-    return admin
+    return user
+
+
+# def create_admin_user():
+#     """
+#     Creates admin user.
+#     """
+#     admin = get_user_model().objects.create_user(
+#         **admin_credentials,
+#         email='admin@example.com',
+#         first_name='AdminName',
+#         last_name='AdminSurname'
+#     )
+#     admin.is_staff = True
+#     admin.save()
+#     return admin
 
 
 def create_teacher_user():
@@ -123,11 +129,12 @@ def create_student_user():
     return student
 
 
-def create_student_group():
+def create_student_group(teacher=None):
     """
     Creates student group.
     """
-    teacher = create_teacher_user()
+    if not teacher:
+        teacher = create_teacher_user()
     student_group = StudentGroup.objects.create(
         name="Group1",
         teacher=teacher
@@ -135,13 +142,56 @@ def create_student_group():
     return student_group
 
 
-def create_planned_test():
+def create_test_module():
+    """
+    Creates test module.
+    """
+    module = TestModule.objects.create(name="Module1")
+    return module
+
+
+def create_planned_test(student_group=None):
     """
     Creates planned test.
     """
-    student_group = create_student_group()
+    if not student_group:
+        student_group = create_student_group()
     planned_test = PlannedTest.objects.create(
         name="Test1",
+        student_group=student_group,
+        begin_date=(timezone.now() - timezone.timedelta(days=1)),
+        end_date=(timezone.now() + timezone.timedelta(days=1))
+    )
+    return planned_test
+
+
+def create_test_modular(student_group=None, module=None):
+    """
+    Creates modular test.
+    """
+    if not student_group:
+        student_group = create_student_group()
+    if not module:
+        module = create_test_module()
+    test_modular = PlannedTestModular.objects.create(
+        name="ModularTest1",
+        student_group=student_group,
+        begin_date=(timezone.now() - timezone.timedelta(days=1)),
+        end_date=(timezone.now() + timezone.timedelta(days=1)),
+        module=module,
+        task_count=1
+    )
+    return test_modular
+
+
+def create_test_manual(student_group=None):
+    """
+    Creates manual test.
+    """
+    if not student_group:
+        student_group = create_student_group()
+    planned_test = PlannedTest.objects.create(
+        name="ManualTest1",
         student_group=student_group,
         begin_date=(timezone.now() - timezone.timedelta(days=1)),
         end_date=(timezone.now() + timezone.timedelta(days=1))

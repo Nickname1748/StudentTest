@@ -22,9 +22,9 @@ This module containes tests checking study_base models
 from django.test import TestCase
 from django.utils import timezone
 
-from study_base.models import PlannedTest, StudentGroup, TestAttempt, TestModule, TestTask
+from study_base.models import TestAttempt, TestModule, TestTask
 
-from .utils import create_teacher_user, create_student_user, create_student_group, create_planned_test
+from .utils import create_student_user, create_test_module, create_student_group, create_planned_test
 
 
 class StudentGroupModelTests(TestCase):
@@ -48,7 +48,7 @@ class TestModuleModelTests(TestCase):
     """
 
     def setUp(self):
-        self.module = TestModule.objects.create(name="Module1")
+        self.module = create_test_module()
 
     def test_module_str(self):
         """
@@ -63,7 +63,7 @@ class TestTaskModelTests(TestCase):
     """
 
     def setUp(self):
-        module = TestModule.objects.create(name="Module1")
+        module = create_test_module()
         self.task = TestTask.objects.create(
             task_description="Task1",
             module=module
