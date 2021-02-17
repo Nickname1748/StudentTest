@@ -16,7 +16,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 '''
-This module containes tests checking study_base teacher views.
+This module containes tests checking study_base headteacher views.
 '''
 
 from django.test import TestCase
