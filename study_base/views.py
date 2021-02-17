@@ -1,9 +1,25 @@
+# Student Test System
+# Copyright (C) 2020-2021 Andrey Shmaykhel <shmayhel.andrey@gmail.com>,
+#                         Alexander Solovyov
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 """
 This module contains test views.
 """
 
 import random
-import ast
 from django.contrib.auth.models import Group
 
 from django.http.response import Http404
@@ -16,12 +32,14 @@ from django.utils.decorators import method_decorator
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import gettext as _
 
 from .models import PlannedTestManual, PlannedTestModular, StudentGroup, PlannedTest, TestAttempt, TestModule, TestTask, TestTaskMultipleChoiceItem, TestTaskSingleChoice, TestTaskSingleChoiceItem, TestTaskMultipleChoice, TestTaskText
 from .decorators import group_required
 from .forms import (
     CreateTestTaskMultipleChoiceForm, CreateTestTaskMultipleChoiceItemFormSet, CreateTestTaskTextForm, PlanTestManualForm, PlanTestModularForm, CreateTestModuleForm, CreateTestTaskSingleChoiceForm,
     CreateTestTaskSingleChoiceItemFormSet, TakeTestTaskSingleChoiceForm, TakeTestTaskMultipleChoiceForm, TakeTestTaskTextForm)
+from .utils import assert_test_task_single_choice, assert_test_task_multiple_choice, assert_test_task_text
 
 
 @login_required
@@ -106,7 +124,7 @@ def edit_test(request, test_id):
         return redirect('study_base:edit_test_modular', test_id)
     if PlannedTestManual.objects.filter(pk=test_id).exists():
         return redirect('study_base:edit_test_manual', test_id)
-    raise Http404('No such test exist')
+    raise Http404(_('No such test exist'))
 
 
 @method_decorator(group_required("Teacher"), name='dispatch')
@@ -276,8 +294,7 @@ class TeacherDetailView(DetailView):
 
     def get_queryset(self):
         return get_object_or_404(Group, name="Teacher").user_set.all()
-        
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['studentgroup_list'] = self.get_object().group_teacher.all()
@@ -388,7 +405,7 @@ def take_test_task(request, attempt_id, task_num):
     """
     attempt = get_object_or_404(TestAttempt, pk=attempt_id)
     if task_num >= attempt.tasks.count():
-        raise Http404("Wrong task number")
+        raise Http404(_("Wrong task number"))
     task = attempt.tasks.all()[task_num]
     if TestTaskSingleChoice.objects.filter(id=task.id).exists():
         return take_test_task_single_choice(request, attempt, task, task_num)
@@ -489,35 +506,6 @@ def end_test_attempt(request, attempt):
     attempt.result = result
     attempt.save()
     return redirect('study_base:attempt_results', attempt.id)
-
-
-def assert_test_task_single_choice(answer):
-    """
-    Checks if answer is right in single choice task
-    """
-    chosen_item = TestTaskSingleChoiceItem.objects.get(pk=answer)
-    return chosen_item.is_right
-
-
-def assert_test_task_multiple_choice(task, answer):
-    """
-    Checks if answer is right in multiple choice task
-    """
-    answer = ast.literal_eval(answer)
-    items = task.testtaskmultiplechoice.testtaskmultiplechoiceitem_set.all()
-    for item in items:
-        if item.is_right and str(item.id) not in answer:
-            return False
-        if not item.is_right and str(item.id) in answer:
-            return False
-    return True
-
-
-def assert_test_task_text(task, answer):
-    """
-    Checks if answer is right in text task
-    """
-    return task.testtasktext.answer == answer
 
 
 @method_decorator(group_required("Student"), name='dispatch')

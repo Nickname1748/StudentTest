@@ -38,6 +38,7 @@
             <input type="button" class="btn btn-primary" value="Добавить вариант ответа" id="add_more">
         {% endif %}
         <input type="submit" class="btn btn-primary" value="Создать">
+        <a class="btn btn-info ml-2" href="{% url 'study_base:teacher_home' %}" role="button">Назад</a>
         <script>
             $('#add_more').click(function() {
                 cloneMore('div.formset-item:last', 'form');
