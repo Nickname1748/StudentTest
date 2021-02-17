@@ -23,7 +23,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.utils import timezone
 
-from study_base.models import StudentGroup, TestModule, PlannedTest, PlannedTestModular, PlannedTestManual
+from study_base.models import StudentGroup, TestModule, PlannedTest, PlannedTestModular, PlannedTestManual, TestTask
 
 
 test_credentials = {
@@ -197,3 +197,16 @@ def create_test_manual(student_group=None, teacher=None):
         end_date=(timezone.now() + timezone.timedelta(days=1))
     )
     return planned_test
+
+
+def create_test_task(module=None):
+    """
+    Creates empty task.
+    """
+    if not module:
+        module = create_test_module()
+    task = TestTask.objects.create(
+        task_description="Task1",
+        module=module
+    )
+    return task

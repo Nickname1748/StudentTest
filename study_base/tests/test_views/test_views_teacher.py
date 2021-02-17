@@ -36,14 +36,14 @@ class TeacherHomeViewTests(TestCase):
 
         self.url = reverse('study_base:teacher_home')
 
-    def test_index_view_get_no_login(self):
+    def test_teacher_home_view_get_no_login(self):
         """
         If user is not authenticated, he is redirected to login page.
         """
         response = self.client.get(self.url)
         self.assertRedirects(response, reverse('auth_base:login') + '?next=' + self.url)
 
-    def test_index_view_get_login_not_teacher(self):
+    def test_teacher_home_view_get_login_not_teacher(self):
         """
         If user is not teacher, he is redirected to login page.
         """
@@ -51,9 +51,9 @@ class TeacherHomeViewTests(TestCase):
         response = self.client.get(self.url)
         self.assertRedirects(response, reverse('auth_base:login') + '?next=' + self.url)
 
-    def test_index_view_get_login_teacher(self):
+    def test_teacher_home_view_get_login_teacher(self):
         """
-        If user is teacher, he is redirected to teacher page.
+        If user is teacher, teacher page is shown.
         """
         self.client.login(**teacher_credentials)
         response = self.client.get(self.url)
@@ -88,7 +88,7 @@ class PlanTestModularViewTests(TestCase):
 
     def test_plan_test_modular_view_get_login_teacher(self):
         """
-        If user is teacher, he is redirected to teacher page.
+        If user is teacher, plan test modular view is shown.
         """
         self.client.login(**teacher_credentials)
         response = self.client.get(self.url)
@@ -123,7 +123,7 @@ class PlanTestManualViewTests(TestCase):
 
     def test_plan_test_manual_view_get_login_teacher(self):
         """
-        If user is teacher, he is redirected to teacher page.
+        If user is teacher, plan test manual view is shown..
         """
         self.client.login(**teacher_credentials)
         response = self.client.get(self.url)
@@ -159,7 +159,7 @@ class EditTestModularViewTests(TestCase):
 
     def test_edit_test_modular_view_get_login_teacher(self):
         """
-        If user is teacher, he is redirected to teacher page.
+        If user is teacher, edit test modular view is shown.
         """
         self.client.login(**teacher_credentials)
         response = self.client.get(self.url)
@@ -195,7 +195,7 @@ class EditTestManualViewTests(TestCase):
 
     def test_edit_test_manual_view_get_login_teacher(self):
         """
-        If user is teacher, he is redirected to teacher page.
+        If user is teacher, edit test manual view is shown.
         """
         self.client.login(**teacher_credentials)
         response = self.client.get(self.url)
@@ -295,7 +295,7 @@ class CreateTestModuleViewTests(TestCase):
 
     def test_create_test_module_view_get_login_teacher(self):
         """
-        If user is teacher, he is redirected to teacher page.
+        If user is teacher, create test module view is shown.
         """
         self.client.login(**teacher_credentials)
         response = self.client.get(self.url)
@@ -332,8 +332,187 @@ class EditTestModuleViewTests(TestCase):
 
     def test_edit_test_module_view_get_login_teacher(self):
         """
-        If user is teacher, he is redirected to teacher page.
+        If user is teacher, edit test module view is shown.
         """
         self.client.login(**teacher_credentials)
         response = self.client.get(self.url)
         self.assertTemplateUsed(response, 'study_base/create_module.html')
+
+
+class CreateTestTaskSingleChoiceViewTests(TestCase):
+    """
+    Tests checking create test task single choice view functionality.
+    """
+
+    def setUp(self):
+        create_teacher_user()
+        create_test_user()
+
+        self.url = reverse('study_base:create_tasksinglechoice')
+
+    def test_create_test_task_single_choice_view_get_no_login(self):
+        """
+        If user is not authenticated, he is redirected to login page.
+        """
+        response = self.client.get(self.url)
+        self.assertRedirects(response, reverse('auth_base:login') + '?next=' + self.url)
+
+    def test_create_test_task_single_choice_view_get_login_not_teacher(self):
+        """
+        If user is not teacher, he is redirected to login page.
+        """
+        self.client.login(**test_credentials)
+        response = self.client.get(self.url)
+        self.assertRedirects(response, reverse('auth_base:login') + '?next=' + self.url)
+
+    def test_create_test_task_single_choice_view_get_login_teacher(self):
+        """
+        If user is teacher, create test task single choice view is shown.
+        """
+        self.client.login(**teacher_credentials)
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, 'study_base/create_task.html')
+
+
+class CreateTestTaskMultipleChoiceViewTests(TestCase):
+    """
+    Tests checking create test task multiple choice view functionality.
+    """
+
+    def setUp(self):
+        create_teacher_user()
+        create_test_user()
+
+        self.url = reverse('study_base:create_taskmultiplechoice')
+
+    def test_create_test_task_multiple_choice_view_get_no_login(self):
+        """
+        If user is not authenticated, he is redirected to login page.
+        """
+        response = self.client.get(self.url)
+        self.assertRedirects(response, reverse('auth_base:login') + '?next=' + self.url)
+
+    def test_create_test_task_multiple_choice_view_get_login_not_teacher(self):
+        """
+        If user is not teacher, he is redirected to login page.
+        """
+        self.client.login(**test_credentials)
+        response = self.client.get(self.url)
+        self.assertRedirects(response, reverse('auth_base:login') + '?next=' + self.url)
+
+    def test_create_test_task_multiple_choice_view_get_login_teacher(self):
+        """
+        If user is teacher, create test task multiple choice view is shown.
+        """
+        self.client.login(**teacher_credentials)
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, 'study_base/create_task.html')
+
+
+class CreateTestTaskTextViewTests(TestCase):
+    """
+    Tests checking create test task text view functionality.
+    """
+
+    def setUp(self):
+        create_teacher_user()
+        create_test_user()
+
+        self.url = reverse('study_base:create_tasktext')
+
+    def test_create_test_task_text_view_get_no_login(self):
+        """
+        If user is not authenticated, he is redirected to login page.
+        """
+        response = self.client.get(self.url)
+        self.assertRedirects(response, reverse('auth_base:login') + '?next=' + self.url)
+
+    def test_create_test_task_text_view_get_login_not_teacher(self):
+        """
+        If user is not teacher, he is redirected to login page.
+        """
+        self.client.login(**test_credentials)
+        response = self.client.get(self.url)
+        self.assertRedirects(response, reverse('auth_base:login') + '?next=' + self.url)
+
+    def test_create_test_task_text_view_get_login_teacher(self):
+        """
+        If user is teacher, create test task text view is shown.
+        """
+        self.client.login(**teacher_credentials)
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, 'study_base/create_task.html')
+
+
+class PlannedTestDetailViewTests(TestCase):
+    """
+    Tests checking planned test detail view functionality.
+    """
+
+    def setUp(self):
+        teacher = create_teacher_user()
+        create_test_user()
+
+        test = create_planned_test(teacher=teacher)
+
+        self.url = reverse('study_base:planned_test_results', args=[test.id])
+
+    def test_planned_test_detail_view_get_no_login(self):
+        """
+        If user is not authenticated, he is redirected to login page.
+        """
+        response = self.client.get(self.url)
+        self.assertRedirects(response, reverse('auth_base:login') + '?next=' + self.url)
+
+    def test_planned_test_detail_view_get_login_not_teacher(self):
+        """
+        If user is not teacher, he is redirected to login page.
+        """
+        self.client.login(**test_credentials)
+        response = self.client.get(self.url)
+        self.assertRedirects(response, reverse('auth_base:login') + '?next=' + self.url)
+
+    def test_planned_test_detail_view_get_login_teacher(self):
+        """
+        If user is teacher, planned test detail view is shown.
+        """
+        self.client.login(**teacher_credentials)
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, 'study_base/planned_test_detail.html')
+
+
+class GroupDetailViewTests(TestCase):
+    """
+    Tests checking group detail view functionality.
+    """
+
+    def setUp(self):
+        teacher = create_teacher_user()
+        create_test_user()
+
+        group = create_student_group(teacher=teacher)
+
+        self.url = reverse('study_base:group_detail', args=[group.id])
+
+    def test_group_detail_view_get_no_login(self):
+        """
+        If user is not authenticated, he is redirected to login page.
+        """
+        response = self.client.get(self.url)
+        self.assertRedirects(response, reverse('auth_base:login') + '?next=' + self.url)
+
+    def test_group_detail_view_get_login_not_teacher(self):
+        """
+        If user is not teacher, he is redirected to login page.
+        """
+        self.client.login(**test_credentials)
+        response = self.client.get(self.url)
+        self.assertRedirects(response, reverse('auth_base:login') + '?next=' + self.url)
+
+    def test_group_detail_view_get_login_teacher(self):
+        """
+        If user is teacher, group detail view is shown.
+        """
+        self.client.login(**teacher_credentials)
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, 'study_base/group_detail.html')
