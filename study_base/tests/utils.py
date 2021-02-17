@@ -23,7 +23,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.utils import timezone
 
-from study_base.models import StudentGroup, TestModule, PlannedTest, PlannedTestModular, PlannedTestManual, TestTask
+from study_base.models import StudentGroup, TestModule, PlannedTest, PlannedTestModular, PlannedTestManual, TestTask, TestTaskMultipleChoice, TestTaskMultipleChoiceItem, TestTaskSingleChoice, TestTaskSingleChoiceItem, TestTaskText
 
 
 test_credentials = {
@@ -208,5 +208,75 @@ def create_test_task(module=None):
     task = TestTask.objects.create(
         task_description="Task1",
         module=module
+    )
+    return task
+
+
+def create_test_task_single_choice(module=None):
+    """
+    Creates test task single choice.
+    """
+    if not module:
+        module = create_test_module()
+    task = TestTaskSingleChoice.objects.create(
+        task_description="TaskSingle1",
+        module=module
+    )
+    TestTaskSingleChoiceItem.objects.create(
+        task=task,
+        text="1",
+        is_right=False
+    )
+    TestTaskSingleChoiceItem.objects.create(
+        task=task,
+        text="2",
+        is_right=True
+    )
+    TestTaskSingleChoiceItem.objects.create(
+        task=task,
+        text="3",
+        is_right=False
+    )
+    return task
+
+
+def create_test_task_multiple_choice(module=None):
+    """
+    Creates test task multiple choice.
+    """
+    if not module:
+        module = create_test_module()
+    task = TestTaskMultipleChoice.objects.create(
+        task_description="TaskMultiple1",
+        module=module
+    )
+    TestTaskMultipleChoiceItem.objects.create(
+        task=task,
+        text="1",
+        is_right=False
+    )
+    TestTaskMultipleChoiceItem.objects.create(
+        task=task,
+        text="2",
+        is_right=True
+    )
+    TestTaskMultipleChoiceItem.objects.create(
+        task=task,
+        text="3",
+        is_right=True
+    )
+    return task
+
+
+def create_test_task_text(module=None):
+    """
+    Creates test task text.
+    """
+    if not module:
+        module = create_test_module()
+    task = TestTaskText.objects.create(
+        task_description="TaskMultiple1",
+        module=module,
+        answer="Answer1"
     )
     return task

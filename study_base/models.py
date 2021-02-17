@@ -16,7 +16,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """
-This module contains essential study and test modules
+This module contains essential study and test models
 """
 
 import uuid

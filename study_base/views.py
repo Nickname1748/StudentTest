@@ -20,7 +20,6 @@ This module contains test views.
 """
 
 import random
-import ast
 from django.contrib.auth.models import Group
 
 from django.http.response import Http404
@@ -40,6 +39,7 @@ from .decorators import group_required
 from .forms import (
     CreateTestTaskMultipleChoiceForm, CreateTestTaskMultipleChoiceItemFormSet, CreateTestTaskTextForm, PlanTestManualForm, PlanTestModularForm, CreateTestModuleForm, CreateTestTaskSingleChoiceForm,
     CreateTestTaskSingleChoiceItemFormSet, TakeTestTaskSingleChoiceForm, TakeTestTaskMultipleChoiceForm, TakeTestTaskTextForm)
+from .utils import assert_test_task_single_choice, assert_test_task_multiple_choice, assert_test_task_text
 
 
 @login_required
@@ -506,35 +506,6 @@ def end_test_attempt(request, attempt):
     attempt.result = result
     attempt.save()
     return redirect('study_base:attempt_results', attempt.id)
-
-
-def assert_test_task_single_choice(answer):
-    """
-    Checks if answer is right in single choice task
-    """
-    chosen_item = TestTaskSingleChoiceItem.objects.get(pk=answer)
-    return chosen_item.is_right
-
-
-def assert_test_task_multiple_choice(task, answer):
-    """
-    Checks if answer is right in multiple choice task
-    """
-    answer = ast.literal_eval(answer)
-    items = task.testtaskmultiplechoice.testtaskmultiplechoiceitem_set.all()
-    for item in items:
-        if item.is_right and str(item.id) not in answer:
-            return False
-        if not item.is_right and str(item.id) in answer:
-            return False
-    return True
-
-
-def assert_test_task_text(task, answer):
-    """
-    Checks if answer is right in text task
-    """
-    return task.testtasktext.answer == answer
 
 
 @method_decorator(group_required("Student"), name='dispatch')
