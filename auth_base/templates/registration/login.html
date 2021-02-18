@@ -28,5 +28,6 @@
         </div>
         <input type="submit" class="login-button btn-action" value="Войти">
         <input type="hidden" name="next" value="{{ next }}">
+        <a href="{% url 'auth_base:register' %}" class = "ml-3">Нет аккаунта? Зарегистрируйтесь</a>
     </form>
 {% endblock %}
