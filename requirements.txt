@@ -1,4 +1,4 @@
-coverage==5.4
+coverage==5.5
 Django==3.1.7
 django-crispy-forms==1.11.1
 django-registration==3.1.1
