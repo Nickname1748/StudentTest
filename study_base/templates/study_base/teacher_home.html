@@ -19,7 +19,7 @@
                     {% for studentgroup in studentgroup_list %}
                     <tr>
                         <td>{{ studentgroup.name }}</td>
-                        <td><a href="{% url 'study_base:group_detail' studentgroup.id %}" class="btn btn-primary">Подробнее</a></td>
+                        <td><a href="{% url 'study_base:group_detail' studentgroup.id %}" class="btn btn-info">Подробнее</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -39,19 +39,41 @@
                     {% for plannedtest in plannedtest_list %}
                     <tr>
                         <td>{{ plannedtest }}</td>
-                        <td><a class="btn btn-primary" href="{% url 'study_base:edit_test' plannedtest.id %}">Редактировать тестирование</a></td>
-                        <td><a class="btn btn-primary" href="{% url 'study_base:planned_test_results' plannedtest.id %}">Результаты</a></td>
+                        <td><a class="btn btn-secondary" href="{% url 'study_base:edit_test' plannedtest.id %}">Редактировать тестирование</a></td>
+                        <td><a class="btn btn-success" href="{% url 'study_base:planned_test_results' plannedtest.id %}">Результаты</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            <div class="dropdown float-right">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="planTest" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Запланировать тестирование
+                </button>
+                <div class="dropdown-menu" aria-labelledby="planTest">
+                    <a class="dropdown-item" href="{% url 'study_base:plan_test_modular' %}">Запланировать тестирование по модулю</a>
+                    <a class="dropdown-item" href="{% url 'study_base:plan_test_manual' %}">Запланировать тестирование по выбранным заданиям</a>
+                </div>
+            </div>
         </div>
     </div>
-    <a class="btn btn-primary mx-2 my-2" href="{% url 'study_base:plan_test_modular' %}">Запланировать тестирование по модулю</a>
-    <a class="btn btn-primary mx-2 my-2" href="{% url 'study_base:plan_test_manual' %}">Запланировать тестирование по выбранным заданиям</a>
+    <hr>
     <h2>Добавить задания</h2>
-    <a class="btn btn-primary mx-2 my-2" href="{% url 'study_base:create_module' %}">Создать модуль</a>
-    <a class="btn btn-primary mx-2 my-2" href="{% url 'study_base:create_tasksinglechoice' %}">Создать задание с выбором одного варианта ответа</a>
+    <div class="btn-group mt-1" role="group" aria-label="Basic example">
+        <a class="btn btn-primary" href="{% url 'study_base:create_module' %}" style="border-radius: .25rem">Создать модуль</a>
+        <div class="dropdown ml-3">
+            <button class="btn btn-success dropdown-toggle" type="button" id="addTask" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Добавить задание
+            </button>
+            <div class="dropdown-menu" aria-labelledby="addTask">
+              <a class="dropdown-item" href="{% url 'study_base:create_tasksinglechoice' %}">Задание с выбором одного варианта ответа</a>
+              <a class="dropdown-item" href="{% url 'study_base:create_taskmultiplechoice' %}">Задание с выбором нескольких вариантов ответа</a>
+              <a class="dropdown-item" href="{% url 'study_base:create_tasktext' %}">Задание с кратким ответом</a>
+            </div>
+        </div>
+      </div>
+    <!--
+        <a class="btn btn-primary mx-2 my-2" href="{% url 'study_base:create_tasksinglechoice' %}">Создать задание с выбором одного варианта ответа</a>
     <a class="btn btn-primary mx-2 my-2" href="{% url 'study_base:create_taskmultiplechoice' %}">Создать задание с выбором нескольких вариантов ответа</a>
     <a class="btn btn-primary mx-2 my-2" href="{% url 'study_base:create_tasktext' %}">Создать задание с кратким ответом</a>
+    -->
 {% endblock %}
